@@ -74,6 +74,7 @@ interface OrderForm {
 
 ### Класс `API`
 Класс доступа к веб-серверу. Обеспечивает выполнение запросав GET, POST\
+
 Методы:
 - `get` - выполняет GET запрос
 - `post` - выполняет POST запрос 
@@ -86,6 +87,7 @@ interface OrderForm {
 Поля:
 - _submit: HTMLButtonElement - кнопка отправки формы
 - _errors: HTMLElement - контейнер для ошибок 
+
 Методы: 
 - `render` - метод рендеринга формы
 - `set errors` - сеттер для установки сообщений об ошибках
@@ -111,6 +113,7 @@ interface OrderForm {
 Поля класса:
 - _content: HTMLTemplateElement - содержимое модального окна
 - _closeButton: HTMLButtonElement - закрытие модального окна
+
 Методы: 
 - `open` - открывает модального окна
 - `close` - закрытие модального окна
@@ -121,6 +124,7 @@ interface OrderForm {
 - _catalog: HTMLElement - контейнер для товаров
 - buttonCart: HTMLButtonElement - кнопка корзины
 - _counter: HTMLSpanElement - счетчик товаров в корзине
+
 Методы:
 - `counter` - отображение количества товаров в корзине
 - `catalog` - элемент отображения всех доступных карточек
@@ -134,6 +138,7 @@ interface OrderForm {
 - _image: HTMLImageElement - картинка лота
 - _price: HTMLSpanElement - цена лота
 - _category: HTMLSpanElement - категория лота
+
 Методы:
 - `id :string` - устанавливает ID лота
 - `title :string` - устанавливает заголовок лота
@@ -148,6 +153,7 @@ interface OrderForm {
 - button: HTMLButtonElement - кнопка оформления. `button` вызывает событие `order_payment:open`
 - basketList: HTMLElement - список товаров
 - totalPrice: HTMLElement - общая стоимость корзины
+
 Методы:
 - `render` - отображает список товаров
 - `deleteBtn` - кнопка удаления товара
@@ -160,6 +166,7 @@ interface OrderForm {
 - email :HTMLInputElement — поле ввода email
 - phone :HTMLInputElement — поле ввода номера телефона
 - payButton :HTMLButtonElement — кнопка оплаты
+
 Методы:
 - `set address` - адрес дооставки
 - `set email` - email пользователя
@@ -172,6 +179,7 @@ interface OrderForm {
 - title :HTMLTitleElement - сообщение об успешной покупке
 - totalPrice :HTMLElement - стоимость заказа
 - closeButton :HTMLButtonElement - кнопка закрытия окна 
+
 Методы:
 - `set total` - отоброженеи стоимости заказа
 
@@ -199,6 +207,7 @@ interface OrderForm {
 Класс для хранения данных корзины товаров\
 Поля:
 - cards: ICard[] - массив товаров в корзине
+
 Методы:
 - `addToCart(card: ICard) :void` - добавляеттовар в корзину
 - `removeFromCart(id: string) :void` - удаляет товар из корзины
