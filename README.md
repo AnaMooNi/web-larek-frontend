@@ -6,6 +6,8 @@
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
+- src/components/model/ - папка с кодом слоя данных
+- src/components/view/ - папка с кодом слоя представления
 
 Важные файлы:
 - src/pages/index.html — HTML-файл главной страницы
@@ -97,6 +99,7 @@ interface OrderForm {
 - `render` - метод рендеринга формы
 - `set errors` - сеттер для установки сообщений об ошибках
 - `set valid` - сеттер для установки валидности формы
+- `onInputChange()` - метод обработки изменения поля ввода
 
 ### Класс `Modal`
 Реалезация модальных окон\
@@ -122,7 +125,7 @@ interface OrderForm {
 
 ## Слой данных(Model)
 
-### Класс `CardModel`
+### Класс `CardsModel`
 Класс для хранения данных товаров\
 Поля:
 - id: string - ID товара
@@ -130,43 +133,45 @@ interface OrderForm {
 
 Методы:
 - `set cards(cards: ICard[])` - сохраняет список товаров
-- `get cards(cards: ICard[])` - возвращает список товаров
-- `get card(id: string)` - возвращает товар по id
+- `get cards(): ICard[]` - возвращает список товаров
+- `getCardById(id: string)` - возвращает товар по id
 
 ### Класс `CartModel`
 Класс для хранения данных корзины товаров\
 Поля:
-- cards: ICard[] - массив товаров в корзине
+- items: ICard[] - массив товаров в корзине
 
 Методы:
 - `addToCart(card: ICard) :void` - добавляет товар в корзину
 - `removeFromCart(id: string) :void` - удаляет товар из корзины
 - `clearCart() :void` - очищает всю корзину 
 - `totalPrice() :number` - сумма всех заказов
-- `getItems() :Record<string, number>` - возвращает объект 
+- `getItems(): ICard[]` - возвращает массив товаров
 - `hasItem(id: string) :boolean` - проверяет, есть ли товар с конкретным ID
 - `getItemCountById(id: string) :number` - возвращает количество товара в корзине по ID
 - `getItemCount() :number` - общее количество товаров в корзине
-- `isEmpty() :boolean` - проверка пуста ли корзина
 
-### Класс `DeliveryForm`
-Кдасс с данными пользователя для оформления заказа\
+### Класс `FormModel`
+Класс для хранения данных пользователя\
 Поля:
-- address :HTMLInputElement - адрес доставки
-- payment :HTMLInputElement - способ оплаты
+- address :string - адрес доставки
+- payment :string - способ оплаты
 
-### Класс `ContactsForm`
-Класс с контактоной информацией пользователя\
-Поля:
-- phone :HTMLInputElement  - телефон для связи
-- email :HTMLInputElement  - почта для связи
+- phone :string - телефон для связи
+- email :string - почта для связи
 
-Методы для `DeliveryForm` и `ContactsForm`:
-- `validate` - проверяет корректность введённых данных пользователя
-- `setOrderData` - устанавливает контактные данные
-- `setOrderData` - устанавливает контактные данные
-- `resetForm()` - очищает поля формы
+- _valid :boolean - валидация
+- _currentStep: 'order' | 'contacts' = 'order' - для перехода на шаг 1 или шаг 2
+- _initialLoad: boolean - проверка на начальную загрузку полей
+- _hasAddressInteraction :boolean - проверка не было взаимодействия и данных с адресом
+- _hasPaymentInteraction :boolean` - проверка не было взаимодействия и данных с оплатой
 
+Методы:
+- `setOrderData(data :IOrderForm)` - устанавливает контактные данные
+- `getFormData() :IOrderForm` - возвращает введенные контактные данные
+- `setStep(step: 'order' | 'contacts')` - устанавливает текущий шаг для валидации
+- `get valid(): boolean` - проверяет корректность введённых данных пользователя
+- `reset()` - очистка данных формы
 
 ## Компоненты представления
 Классы представления отвечают за отображение внутри контейнера (DOM-элемент) передаваемых в них данных
@@ -175,7 +180,8 @@ interface OrderForm {
 Класс представления, отображает главную страницу\
 Поля класса:
 - _catalog: HTMLElement - контейнер для товаров
-- buttonCart: HTMLButtonElement - кнопка корзины
+- _basket: HTMLElement - корзина на главной странице
+- _wrapper: HTMLElement - обёртка страницы
 - _counter: HTMLSpanElement - счетчик товаров в корзине
 
 Методы:
@@ -193,54 +199,60 @@ interface OrderForm {
 - _category: HTMLSpanElement - категория лота
 
 Методы:
-- `id :string` - устанавливает ID лота
-- `title :string` - устанавливает заголовок лота
-- `description :string` - устанавливает описание лота
-- `image :string` - устанавливает картинку лота
-- `price :number` - устанавливает цену лота
-- `category :string` - устанавливает категорию лота
+- `set id :string` - устанавливает ID лота
+- `set title :string` - устанавливает заголовок лота
+- `set image :string` - устанавливает картинку лота
+- `set price :number` - устанавливает цену лота
+- `set category :string` - устанавливает категорию лота
+- `getCategoryClass(category: categories) :string` - устонавливает категорию
 
 ### Класс `Basket`
 Класс корзины товаров.\
 Поля:
-- button: HTMLButtonElement - кнопка оформления. `button` вызывает событие `order_payment:open`
-- basketList: HTMLElement - список товаров
-- totalPrice: HTMLElement - общая стоимость корзины
+- _button: HTMLButtonElement - кнопка оформления. `button` вызывает событие `order_payment:open`
+- _basketList: HTMLElement - список товаров
+- _totalPrice: HTMLElement - общая стоимость корзины
 
 Методы:
-- `render` - отображает список товаров
-- `deleteBtn` - кнопка удаления товара
-- `totalPrice` - общяя стоимость товаров
+- `set items(items: HTMLElement[])` - отображает список товаров
+- `set selected(items :string[])` - кнопка удаления товара
+- `set total(total :number)` - общяя стоимость товаров
 
 ### Класс `OrderFirstStep`
 Класс формы оформления заказа с оплатой и адрессом\
 Поля:
-- address :HTMLInputElement - поле ввода адресса
-- payButton :HTMLButtonElement — кнопка оплаты
-- buttonNext :HTMLButtonElement - кнопка "Далее"
+- onlineButton: HTMLButtonElement - кнопка для онлайн оплаты
+- offlineButton: HTMLButtonElement - кнопка для оплаты при получении
+- submitButton: HTMLButtonElement - кнопка подтверждения
+- addressInput: HTMLInputElement - поле формы для адреса
+- _errors: HTMLElement - для ошибок валидации
 
 Методы:
 - `set address` - адрес дооставки
-- `set payment` - способ оплаты
+- `set valid(value: boolean)` - валидность для активности кнопки
+- `set errors(value :string)` - для вывода ошибок
+- `render(data: Partial): HTMLElement` - рендер
 
 ### Класс `OrderSecondStep`
 Класс формы оформления заказа с почтой и телефоном\
 Поля:
-- email :HTMLInputElement — поле ввода email
-- phone :HTMLInputElement — поле ввода номера телефона
-- payButton :HTMLButtonElement — кнопка "Оплатить"
+- _email :HTMLInputElement - поле ввода email
+- _phone :HTMLInputElement - поле ввода номера телефона
+- _payButton :HTMLButtonElement - кнопка "Оплатить"
+- _errors: HTMLElement - ошибки валидации полей
 
 Методы:
 - `set email` - email пользователя
 - `set phone` - номер телефона пользователя
+- `set valid(value :boolean)` - валидность для активности кнопки
+- `set errors(value :string)` - для вывода ошибок
+- `render(data: Partial): HTMLElement` - рендер
 
 ### Класс `OrderSuccess`
 Класс окна успешной покупки\
 Поля: 
-- title :HTMLTitleElement - сообщение об успешной покупке
-- totalPrice :HTMLElement - стоимость заказа
-- button: HTMLButtonElement - кнопка "За новыми покупками"
-- closeButton :HTMLButtonElement - кнопка закрытия окна 
+- _totalPrice :HTMLElement - стоимость заказа
+- _closeButton :HTMLButtonElement - кнопка закрытия окна 
 
 Методы:
 - `set total` - отоброженеи стоимости заказа
